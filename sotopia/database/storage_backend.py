@@ -169,7 +169,8 @@ class LocalJSONBackend(StorageBackend):
             base_path: Base directory for storing data. Defaults to ~/.sotopia/data
         """
         if base_path is None:
-            base_path = os.path.expanduser("~/.sotopia/data")
+            env_path = os.environ.get("SOTOPIA_LOCAL_STORAGE_PATH")
+            base_path = env_path if env_path else os.path.expanduser("~/.sotopia/data")
         self.base_path = Path(base_path)
         self.base_path.mkdir(parents=True, exist_ok=True)
 
