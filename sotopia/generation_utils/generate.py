@@ -262,11 +262,15 @@ async def agenerate(
         )
 
         # Build completion kwargs with structured output
+        # When base_url is set (vLLM path), keep drop_params=False so that a
+        # missing response_format support surfaces as an error rather than
+        # silently degrading. vLLM requires --guided-decoding-backend outlines
+        # (or lm-format-enforcer) at server startup for structured output.
         completion_kwargs = {
             "model": model_name,
             "messages": messages,
             "response_format": response_format,
-            "drop_params": True,  # litellm automatically drops unsupported params
+            "drop_params": base_url is None,
             "base_url": base_url,
             "api_key": api_key,
         }
